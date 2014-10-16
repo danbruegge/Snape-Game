@@ -3,10 +3,11 @@ package;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.group.FlxGroup;
 import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
-import flixel.util.FlxSpriteUtil;
+import flixel.util.FlxCollision;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -19,6 +20,7 @@ class Snake extends FlxSprite {
     var _moveRate:Int = 750;
     var _nextMove:Int = 0;
     var _headPoints:Array<FlxPoint>;
+    var _walls:FlxGroup;
 
     override public function new(X:Int=0, Y:Int=0):Void {
 
@@ -40,6 +42,12 @@ class Snake extends FlxSprite {
 
         aim = new FlxSprite(_randomX(), _randomY());
         aim.makeGraphic(_tileSize, _tileSize, 0xffcc3333);
+
+        _walls = FlxCollision.createCameraWall(
+            FlxG.camera,
+            FlxCollision.CAMERA_WALL_OUTSIDE,
+            0
+        );
     
     }
 
@@ -64,6 +72,8 @@ class Snake extends FlxSprite {
         }
 
         FlxG.overlap(this, aim, _overlapAim);
+
+        FlxG.collide(this, _walls, _gameOver);
 
     }
 
@@ -113,6 +123,12 @@ class Snake extends FlxSprite {
             facing = FlxObject.LEFT;
 
         }
+
+        if (FlxG.keys.anyPressed(['SPACE', 'R'])) {
+
+            _reset();
+
+        }
     
     }
 
@@ -139,8 +155,6 @@ class Snake extends FlxSprite {
         
         }
 
-        FlxSpriteUtil.screenWrap(this);
-
         for (i in 0..._headPoints.length) {
         
             body.members[i].setPosition(_headPoints[i].x, _headPoints[i].y);
@@ -157,6 +171,18 @@ class Snake extends FlxSprite {
 
         _addBodySegment();
         
+    }
+
+    function _reset():Void {
+    
+        FlxG.resetState();
+    
+    }
+
+    function _gameOver(sprite1:FlxSprite, sprite2:FlxSprite):Void {
+    
+        _reset();
+    
     }
 
 }
