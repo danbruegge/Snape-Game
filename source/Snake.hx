@@ -15,7 +15,7 @@ class Snake extends FlxSprite {
     public var body:FlxSpriteGroup;
     public var aim:FlxSprite;
 
-    var _tileSize:Int = 32;
+    var _tileSize:Int = 16;
     var _moveRate:Int = 750;
     var _nextMove:Int = 0;
     var _headPoints:Array<FlxPoint>;
@@ -64,7 +64,6 @@ class Snake extends FlxSprite {
         }
 
         FlxG.overlap(this, aim, _overlapAim);
-        FlxG.overlap(body, aim, _overlapAim);
 
     }
 
@@ -89,7 +88,7 @@ class Snake extends FlxSprite {
     function _addBodySegment():Void {
     
         var bodySegment:FlxSprite = new FlxSprite(-_tileSize, -_tileSize);
-        bodySegment.makeGraphic(_tileSize, _tileSize, 0xffaacc66);
+        bodySegment.makeGraphic(_tileSize, _tileSize, 0xffaacc33);
 
         body.add(bodySegment);
     
