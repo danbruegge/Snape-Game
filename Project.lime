@@ -20,10 +20,10 @@
 	<window if="web" orientation="portrait"  />
 	
 	<!--Desktop-specific-->
-	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
+	<window if="desktop" orientation="portrait" fullscreen="false" resizable="true" />
 	
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
+	<window if="mobile" orientation="portrait" fullscreen="true" width="0" height="0" />
 	
 	<!--------------------------------PATHS SETTINGS-------------------------------->
 	
@@ -75,7 +75,20 @@
 	
 	<!--Enable this for Nape release builds for a serious peformance improvement-->
 	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
-	
+            
+        <!--------------------------------ANDROID---------------------------------------->
+
+        <android target-sdk-version="19" />
+        <android install-location="auto" />
+        <window hardware="true" allow-shaders="true" require-shaders="true" if="cpp"/>
+        <window vsync="true" antialiasing="4" if="cpp" />
+        <window orientation="portrait" />
+
+        <icon path="assets/images/icons/36.png" size="36" if="android" />
+        <icon path="assets/images/icons/48.png" size="48" if="android" />
+        <icon path="assets/images/icons/72.png" size="72" if="android" />
+        <icon path="assets/images/icons/96.png" size="96" if="android" />
+
 	<!--------------------------------CUSTOM---------------------------------------->
 	
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->

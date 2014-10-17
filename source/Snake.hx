@@ -254,7 +254,15 @@ class Snake extends FlxSprite {
 
     function _gameOver(sprite1:FlxSprite, sprite2:FlxSprite):Void {
     
-        _reset();
+        if (_autoMove) {
+
+            _reset();
+
+        } else {
+            
+            FlxG.switchState(new MenuState());
+
+        }
     
     }
 

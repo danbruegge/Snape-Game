@@ -20,12 +20,18 @@ class MenuState extends FlxState {
 
         super.create();
 
-        FlxG.cameras.bgColor = 0xff111111;
+        FlxG.cameras.bgColor = 0x111111;
 
         _snake = new Snake(0, 0, true);
         _snake.addToState();
 
         _btnPlay = new FlxButton(0, 0, 'Play', _clickPlay);
+        _btnPlay.loadGraphic('assets/images/button.png', true, 96, 32);
+        _btnPlay.animation.add('normal', [0]);
+        _btnPlay.animation.add('hightlight', [1]);
+        _btnPlay.animation.add('pressed', [2]);
+        _btnPlay.label.setFormat(null, 16, 0x111111, 'center');
+        _btnPlay.setGraphicSize(96, 32);
         _btnPlay.screenCenter();
         
         add(_btnPlay);
