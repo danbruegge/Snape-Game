@@ -1,31 +1,26 @@
 package;
 
 import flixel.FlxG;
-import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
-import flixel.util.FlxColor;
-import flixel.util.FlxDestroyUtil;
-import flixel.util.FlxMath;
 
 using flixel.util.FlxSpriteUtil;
 
 class MenuState extends FlxState {
 
-    var _snake:Snake;
-    var _btnPlay:FlxButton;
-
     override public function create():Void {
 
         super.create();
 
+        var _snake = new Snake(0, 0, true);
+        var _header = new FlxText(0, Std.int(FlxG.height / 4), FlxG.width, 'Snape');
+        var _btnPlay = new FlxButton(0, 0, 'Play', _clickPlay);
+
         FlxG.cameras.bgColor = 0x111111;
 
-        _snake = new Snake(0, 0, true);
-        _snake.addToState();
+        _header.setFormat(null, 64, 0xaacc33, 'center');
 
-        _btnPlay = new FlxButton(0, 0, 'Play', _clickPlay);
         _btnPlay.loadGraphic('assets/images/button.png', true, 96, 32);
         _btnPlay.animation.add('normal', [0]);
         _btnPlay.animation.add('hightlight', [1]);
@@ -34,21 +29,8 @@ class MenuState extends FlxState {
         _btnPlay.setGraphicSize(96, 32);
         _btnPlay.screenCenter();
         
+        add(_header);
         add(_btnPlay);
-
-    }
-    
-    override public function destroy():Void {
-
-        FlxDestroyUtil.destroy(_btnPlay);
-
-        super.destroy();
-
-    }
-
-    override public function update():Void {
-
-        super.update();
 
     }
 

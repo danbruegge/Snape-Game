@@ -4,9 +4,11 @@ import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import flash.events.Event;
+import flash.text.Font;
 import flash.Lib;
 import flixel.FlxGame;
 import flixel.FlxState;
+
 
 class Main extends Sprite 
 {

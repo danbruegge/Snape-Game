@@ -59,6 +59,8 @@ class Snake extends FlxSprite {
             FlxObject.LEFT
         ];
 
+        addToState();
+
     }
 
     override public function destroy():Void {
