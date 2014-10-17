@@ -16,9 +16,7 @@ class PlayState extends FlxState {
 
         _snake = new Snake();
 
-        add(_snake);
-        add(_snake.body);
-        add(_snake.aim);
+        _snake.addToState();
 
     }
     

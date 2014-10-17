@@ -21,8 +21,10 @@ class Snake extends FlxSprite {
     var _nextMove:Int = 0;
     var _headPoints:Array<FlxPoint>;
     var _walls:FlxGroup;
+    var _autoMove:Bool;
+    var _moves:Array<Int>;
 
-    override public function new(X:Int=0, Y:Int=0):Void {
+    override public function new(X:Int=0, Y:Int=0, autoMove:Bool=false):Void {
 
         super(
             _tileSize * FlxRandom.intRanged(1, 10), 
@@ -48,7 +50,15 @@ class Snake extends FlxSprite {
             FlxCollision.CAMERA_WALL_OUTSIDE,
             0
         );
-    
+
+        _autoMove = autoMove;
+        _moves = [
+            FlxObject.UP,
+            FlxObject.RIGHT,
+            FlxObject.DOWN,
+            FlxObject.LEFT
+        ];
+
     }
 
     override public function destroy():Void {
@@ -76,6 +86,14 @@ class Snake extends FlxSprite {
         // FlxG.collide(this, body, _gameOver);
         FlxG.collide(this, _walls, _gameOver);
 
+    }
+
+    public function addToState() {
+
+        FlxG.state.add(this);
+        FlxG.state.add(body);
+        FlxG.state.add(aim);
+    
     }
 
     function _randomX():Int {
@@ -109,19 +127,19 @@ class Snake extends FlxSprite {
     
         if (FlxG.keys.anyPressed(['UP', 'W'])) {
         
-            facing = FlxObject.UP;
+            facing = _moves[0];
         
         } else if (FlxG.keys.anyPressed(['RIGHT', 'D'])) {
 
-            facing = FlxObject.RIGHT;
+            facing = _moves[1];
 
         } else if (FlxG.keys.anyPressed(['DOWN', 'S'])) {
 
-            facing = FlxObject.DOWN;
+            facing = _moves[2];
             
         } else if (FlxG.keys.anyPressed(['LEFT', 'A'])) {
 
-            facing = FlxObject.LEFT;
+            facing = _moves[3];
 
         }
 
@@ -134,6 +152,12 @@ class Snake extends FlxSprite {
     }
 
     function _move():Void {
+
+        if (_autoMove) {
+            
+            facing = _ai();
+
+        }
 
         _headPoints.unshift(FlxPoint.get(x, y));
 
@@ -161,6 +185,52 @@ class Snake extends FlxSprite {
             body.members[i].setPosition(_headPoints[i].x, _headPoints[i].y);
         
         }
+    
+    }
+
+    /*
+     * Very basic AI for the snake to find the route to the aim
+     */
+    function _ai():Int {
+
+        var direction:Array<Int> = [];
+
+        // get ditection if snake x and aim x not the same
+        if (x > aim.x) {
+
+            direction.push(3);
+
+        } else {
+
+            direction.push(1);
+
+        }
+
+        // get ditection if snake y and aim y not the same
+        if (y > aim.y) {
+
+            direction.push(0);
+
+        } else {
+
+            direction.push(2);
+
+        }
+
+        // the direct route
+        if (x == aim.x) {
+        
+            return _moves[direction[1]];
+
+        }
+
+        if (y == aim.y) {
+        
+            return _moves[direction[0]];
+
+        }
+    
+        return _moves[direction[FlxRandom.intRanged(0, 1)]];
     
     }
 

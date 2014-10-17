@@ -13,6 +13,7 @@ using flixel.util.FlxSpriteUtil;
 
 class MenuState extends FlxState {
 
+    var _snake:Snake;
     var _btnPlay:FlxButton;
 
     override public function create():Void {
@@ -21,14 +22,13 @@ class MenuState extends FlxState {
 
         FlxG.cameras.bgColor = 0xff111111;
 
-        _btnPlay = new FlxButton(10, 10, 'Play', _clickPlay);
+        _snake = new Snake(0, 0, true);
+        _snake.addToState();
+
+        _btnPlay = new FlxButton(0, 0, 'Play', _clickPlay);
         _btnPlay.screenCenter();
         
         add(_btnPlay);
-
-#if !debug
-        _clickPlay();
-#end
 
     }
     
