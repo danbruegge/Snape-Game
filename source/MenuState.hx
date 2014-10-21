@@ -14,6 +14,8 @@ class MenuState extends FlxState {
 
         super.create();
 
+        FlxG.mouse.visible = true;
+
         var _snake = new Snake(0, 0, true);
         var _header = new FlxText(0, Std.int(FlxG.height / 4), FlxG.width, 'Snape');
         var _headerTween:FlxTween;

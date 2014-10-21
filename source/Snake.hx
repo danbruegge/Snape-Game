@@ -65,7 +65,7 @@ class Snake extends FlxSprite {
 
         FlxG.overlap(this, aim, _overlapAim);
 
-        // FlxG.collide(this, body, _gameOver);
+        FlxG.collide(this, body, _gameOver);
         FlxG.collide(this, _walls, _gameOver);
 
     }
