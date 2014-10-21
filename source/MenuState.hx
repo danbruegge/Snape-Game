@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
+import flixel.tweens.FlxTween;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -15,11 +16,15 @@ class MenuState extends FlxState {
 
         var _snake = new Snake(0, 0, true);
         var _header = new FlxText(0, Std.int(FlxG.height / 4), FlxG.width, 'Snape');
+        var _headerTween:FlxTween;
         var _btnPlay = new FlxButton(0, 0, 'Play', _clickPlay);
 
         FlxG.cameras.bgColor = 0x111111;
 
-        _header.setFormat(null, 64, 0xaacc33, 'center');
+        _header.setFormat(null, 64, 0xaacc33, 'center', FlxText.BORDER_SHADOW, 0xaacc33);
+        _headerTween = FlxTween.color(_header, 2, 0xaacc33, 0xcc3333, 1, 1, {
+            type: FlxTween.PINGPONG
+        });
 
         _btnPlay.loadGraphic('assets/images/button.png', true, 96, 32);
         _btnPlay.animation.add('normal', [0]);
