@@ -129,19 +129,27 @@ class Snake extends FlxSprite {
     
         if (FlxG.keys.anyPressed(['UP', 'W'])) {
         
-            facing = _moves[0];
+            if (facing != _moves[2]) {
+                facing = _moves[0];
+            }
         
         } else if (FlxG.keys.anyPressed(['RIGHT', 'D'])) {
 
-            facing = _moves[1];
+            if (facing != _moves[3]) {
+                facing = _moves[1];
+            }
 
         } else if (FlxG.keys.anyPressed(['DOWN', 'S'])) {
 
-            facing = _moves[2];
+            if (facing != _moves[0]) {
+                facing = _moves[2];
+            }
             
         } else if (FlxG.keys.anyPressed(['LEFT', 'A'])) {
 
-            facing = _moves[3];
+            if (facing != _moves[1]) {
+                facing = _moves[3];
+            }
 
         }
 
