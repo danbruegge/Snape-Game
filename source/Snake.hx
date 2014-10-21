@@ -8,6 +8,7 @@ import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
 import flixel.util.FlxCollision;
+import flixel.util.FlxTimer;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -16,9 +17,10 @@ class Snake extends FlxSprite {
     public var body:FlxSpriteGroup;
     public var aim:FlxSprite;
 
+    static inline var MIN_RATE:Int = 2;
+
     var _tileSize:Int = 16;
-    var _moveRate:Int = 750;
-    var _nextMove:Int = 0;
+    var _moveRate:Float = 20;
     var _headPoints:Array<FlxPoint>;
     var _walls:FlxGroup;
     var _autoMove:Bool;
@@ -30,20 +32,10 @@ class Snake extends FlxSprite {
             _tileSize * FlxRandom.intRanged(1, 10), 
             _tileSize * FlxRandom.intRanged(1, 19)
         );
-        
-        makeGraphic(_tileSize, _tileSize, 0xffaacc33);
-        facing = FlxObject.RIGHT;
 
-        _headPoints = [FlxPoint.get(x, y)];
-        body = new FlxSpriteGroup();
+        _createSnake();
 
-        for (i in 0...4) {
-            _addBodySegment();
-            _move();
-        }
-
-        aim = new FlxSprite(_randomX(), _randomY());
-        aim.makeGraphic(_tileSize, _tileSize, 0xffcc3333);
+        _createAim();
 
         _walls = FlxCollision.createCameraWall(
             FlxG.camera,
@@ -61,12 +53,8 @@ class Snake extends FlxSprite {
 
         addToState();
 
-    }
+        _resetTimer();
 
-    override public function destroy():Void {
-    
-        super.destroy();
-    
     }
 
     override public function update():Void {
@@ -74,14 +62,6 @@ class Snake extends FlxSprite {
         super.update();
 
         _controls();
-
-        if (FlxG.game.ticks > _nextMove) {
-        
-            _nextMove = Std.int(FlxG.game.ticks + _moveRate);
-
-            _move();
-
-        }
 
         FlxG.overlap(this, aim, _overlapAim);
 
@@ -98,21 +78,42 @@ class Snake extends FlxSprite {
     
     }
 
-    function _randomX():Int {
+    function _createSnake() {
         
-        return FlxRandom.intRanged(
-            0, 
-            Std.int(FlxG.width / _tileSize) - 1
-        ) * _tileSize;
-    
+        makeGraphic(_tileSize, _tileSize, 0xffaacc33);
+        facing = FlxObject.RIGHT;
+
+        _headPoints = [FlxPoint.get(x, y)];
+        body = new FlxSpriteGroup();
+
+        for (i in 0...4) {
+            _addBodySegment();
+            _move();
+        }
+
     }
 
-    function _randomY():Int {
+    function _createAim() {
         
-        return FlxRandom.intRanged(
-            0, 
-            Std.int(FlxG.height / _tileSize) - 1
-        ) * _tileSize;
+        aim = new FlxSprite();
+        aim.makeGraphic(_tileSize, _tileSize, 0xffcc3333);
+        _resetAimPosition();
+        
+    }
+
+    function _resetTimer(?Timer:FlxTimer) {
+    
+        if (!alive && Timer != null) {
+
+            Timer.destroy();
+
+            return;
+
+        }
+
+        new FlxTimer(_moveRate / FlxG.updateFramerate, _resetTimer);
+
+        _move();
     
     }
 
@@ -127,33 +128,25 @@ class Snake extends FlxSprite {
 
     function _controls():Void {
     
-        if (FlxG.keys.anyPressed(['UP', 'W'])) {
+        if (FlxG.keys.anyPressed(['UP']) && facing != _moves[2]) {
         
-            if (facing != _moves[2]) {
-                facing = _moves[0];
-            }
+            facing = _moves[0];
         
-        } else if (FlxG.keys.anyPressed(['RIGHT', 'D'])) {
+        } else if (FlxG.keys.anyPressed(['RIGHT']) && facing != _moves[3]) {
 
-            if (facing != _moves[3]) {
-                facing = _moves[1];
-            }
+            facing = _moves[1];
 
-        } else if (FlxG.keys.anyPressed(['DOWN', 'S'])) {
+        } else if (FlxG.keys.anyPressed(['DOWN']) && facing != _moves[0]) {
 
-            if (facing != _moves[0]) {
-                facing = _moves[2];
-            }
+            facing = _moves[2];
             
-        } else if (FlxG.keys.anyPressed(['LEFT', 'A'])) {
+        } else if (FlxG.keys.anyPressed(['LEFT']) && facing != _moves[1]) {
 
-            if (facing != _moves[1]) {
-                facing = _moves[3];
-            }
+            facing = _moves[3];
 
         }
 
-        if (FlxG.keys.anyPressed(['SPACE', 'R'])) {
+        if (FlxG.keys.anyPressed(['SPACE'])) {
 
             _reset();
 
@@ -246,14 +239,33 @@ class Snake extends FlxSprite {
 
     function _overlapAim(sprite:FlxSprite, aim:FlxSprite):Void {
 
-        _moveRate -= 25;
-
-        aim.setPosition(_randomX(), _randomY());
+        _resetAimPosition();
 
         _addBodySegment();
 
-        FlxG.overlap(aim, body, _overlapAim);
+        if (_moveRate >= MIN_RATE) {
+            
+            _moveRate -= 0.25;
+
+        }
         
+    }
+
+    function _resetAimPosition(?Object1:FlxObject, ?Object:FlxObject) {
+    
+        aim.setPosition(
+            FlxRandom.intRanged(
+                0, 
+                Std.int(FlxG.width / _tileSize) - 1
+            ) * _tileSize, 
+            FlxRandom.intRanged(
+                0, 
+                Std.int(FlxG.height / _tileSize) - 1
+            ) * _tileSize
+        );
+
+        FlxG.overlap(aim, body, _resetAimPosition);
+
     }
 
     function _reset():Void {
