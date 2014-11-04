@@ -14,16 +14,18 @@ using flixel.util.FlxSpriteUtil;
 class Snake extends Controls {
 
     public var body:FlxSpriteGroup;
-    public var aim:FlxSprite;
 
     static inline var MIN_RATE:Int = 2;
 
-    var _tileSize:Int = 16;
+    var _aim:Aim;
+    var _tileSize:Int;
     var _moveRate:Float = 20;
     var _headPoints:Array<FlxPoint>;
     var _autoMove:Bool;
 
     override public function new(X:Int=0, Y:Int=0, autoMove:Bool=false):Void {
+
+        _tileSize = Settings.tileSize;
 
         super(
             _tileSize * FlxRandom.intRanged(1, 10), 
@@ -31,7 +33,9 @@ class Snake extends Controls {
         );
 
         _createSnake();
-        _createAim();
+
+        _aim = new Aim();
+        _resetAimPosition();
 
         _autoMove = autoMove;
 
@@ -46,7 +50,7 @@ class Snake extends Controls {
         super.update();
 
         FlxG.overlap(this, body, gameOver);
-        FlxG.overlap(this, aim, _overlapAim);
+        FlxG.overlap(this, _aim, _overlapAim);
 
     }
 
@@ -54,7 +58,7 @@ class Snake extends Controls {
 
         FlxG.state.add(this);
         FlxG.state.add(body);
-        FlxG.state.add(aim);
+        FlxG.state.add(_aim);
     
     }
 
@@ -87,14 +91,6 @@ class Snake extends Controls {
             _move();
         }
 
-    }
-
-    function _createAim() {
-        
-        aim = new FlxSprite();
-        aim.makeGraphic(_tileSize, _tileSize, 0xffcc3333);
-        _resetAimPosition();
-        
     }
 
     function _resetTimer(?Timer:FlxTimer) {
@@ -175,7 +171,7 @@ class Snake extends Controls {
         var direction:Array<Int> = [];
 
         // get ditection if snake x and aim x not the same
-        if (x > aim.x) {
+        if (x > _aim.x) {
 
             direction.push(3);
 
@@ -186,7 +182,7 @@ class Snake extends Controls {
         }
 
         // get ditection if snake y and aim y not the same
-        if (y > aim.y) {
+        if (y > _aim.y) {
 
             direction.push(0);
 
@@ -197,13 +193,13 @@ class Snake extends Controls {
         }
 
         // the direct route
-        if (x == aim.x) {
+        if (x == _aim.x) {
         
             return _moves[direction[1]];
 
         }
 
-        if (y == aim.y) {
+        if (y == _aim.y) {
         
             return _moves[direction[0]];
 
@@ -227,21 +223,12 @@ class Snake extends Controls {
         
     }
 
-    function _resetAimPosition(?Object1:FlxObject, ?Object:FlxObject) {
+    function _resetAimPosition(?Obj1:FlxObject, ?Obj2:FlxObject) {
     
-        aim.setPosition(
-            FlxRandom.intRanged(
-                0, 
-                Std.int(FlxG.width / _tileSize) - 1
-            ) * _tileSize, 
-            FlxRandom.intRanged(
-                0, 
-                Std.int(FlxG.height / _tileSize) - 1
-            ) * _tileSize
-        );
+        _aim.resetPosition();
 
-        FlxG.overlap(aim, body, _resetAimPosition);
-
+        FlxG.overlap(_aim, body, _resetAimPosition);
+    
     }
 
 }
