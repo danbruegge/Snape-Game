@@ -19,13 +19,14 @@ class Snake extends Controls {
 
     var _aim:Aim;
     var _tileSize:Int;
-    var _moveRate:Float = 20;
+    var _moveRate:Float;
     var _headPoints:Array<FlxPoint>;
     var _autoMove:Bool;
 
     override public function new(X:Int=0, Y:Int=0, autoMove:Bool=false):Void {
 
         _tileSize = Settings.tileSize;
+        _moveRate = Settings.moveRate;
 
         super(
             _tileSize * FlxRandom.intRanged(1, 10), 
