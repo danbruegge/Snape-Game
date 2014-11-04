@@ -3,16 +3,15 @@ package;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.group.FlxGroup;
 import flixel.group.FlxSpriteGroup;
+import flixel.util.FlxCollision;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
-import flixel.util.FlxCollision;
 import flixel.util.FlxTimer;
 
 using flixel.util.FlxSpriteUtil;
 
-class Snake extends FlxSprite {
+class Snake extends Controls {
 
     public var body:FlxSpriteGroup;
     public var aim:FlxSprite;
@@ -22,9 +21,7 @@ class Snake extends FlxSprite {
     var _tileSize:Int = 16;
     var _moveRate:Float = 20;
     var _headPoints:Array<FlxPoint>;
-    var _walls:FlxGroup;
     var _autoMove:Bool;
-    var _moves:Array<Int>;
 
     override public function new(X:Int=0, Y:Int=0, autoMove:Bool=false):Void {
 
@@ -34,22 +31,9 @@ class Snake extends FlxSprite {
         );
 
         _createSnake();
-
         _createAim();
 
-        _walls = FlxCollision.createCameraWall(
-            FlxG.camera,
-            FlxCollision.CAMERA_WALL_OUTSIDE,
-            0
-        );
-
         _autoMove = autoMove;
-        _moves = [
-            FlxObject.UP,
-            FlxObject.RIGHT,
-            FlxObject.DOWN,
-            FlxObject.LEFT
-        ];
 
         addToState();
 
@@ -61,12 +45,8 @@ class Snake extends FlxSprite {
     
         super.update();
 
-        _controls();
-
+        FlxG.overlap(this, body, gameOver);
         FlxG.overlap(this, aim, _overlapAim);
-
-        FlxG.collide(this, body, _gameOver);
-        FlxG.collide(this, _walls, _gameOver);
 
     }
 
@@ -78,9 +58,25 @@ class Snake extends FlxSprite {
     
     }
 
+    public function gameOver(sprite1:FlxSprite, sprite2:FlxSprite):Void {
+
+        if (_autoMove) {
+
+            FlxG.resetState();
+
+        } else {
+            
+            alive = false;
+
+            FlxG.switchState(new MenuState());
+
+        }
+    
+    }
+
     function _createSnake() {
         
-        makeGraphic(_tileSize, _tileSize, 0xffaacc33);
+        makeGraphic(_tileSize, _tileSize, 0xffaacc99);
         facing = FlxObject.RIGHT;
 
         _headPoints = [FlxPoint.get(x, y)];
@@ -126,40 +122,20 @@ class Snake extends FlxSprite {
     
     }
 
-    function _controls():Void {
-    
-        if (FlxG.keys.anyPressed(['UP']) && facing != _moves[2]) {
-        
-            facing = _moves[0];
-        
-        } else if (FlxG.keys.anyPressed(['RIGHT']) && facing != _moves[3]) {
-
-            facing = _moves[1];
-
-        } else if (FlxG.keys.anyPressed(['DOWN']) && facing != _moves[0]) {
-
-            facing = _moves[2];
-            
-        } else if (FlxG.keys.anyPressed(['LEFT']) && facing != _moves[1]) {
-
-            facing = _moves[3];
-
-        }
-
-        if (FlxG.keys.anyPressed(['SPACE'])) {
-
-            _reset();
-
-        }
-    
-    }
-
-    function _move():Void {
+    function _move(?newFacing:Int):Void {
 
         if (_autoMove) {
             
             facing = _ai();
 
+        } else {
+        
+            if (newFacing >= 0) {
+                    
+                facing = newFacing;
+
+            }
+        
         }
 
         _headPoints.unshift(FlxPoint.get(x, y));
@@ -266,28 +242,6 @@ class Snake extends FlxSprite {
 
         FlxG.overlap(aim, body, _resetAimPosition);
 
-    }
-
-    function _reset():Void {
-    
-        FlxG.resetState();
-    
-    }
-
-    function _gameOver(sprite1:FlxSprite, sprite2:FlxSprite):Void {
-
-        if (_autoMove) {
-
-            _reset();
-
-        } else {
-            
-            alive = false;
-
-            FlxG.switchState(new MenuState());
-
-        }
-    
     }
 
 }
