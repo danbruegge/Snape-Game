@@ -5,8 +5,8 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
 import flixel.util.FlxCollision;
-import flixel.util.FlxPoint;
-import flixel.util.FlxRandom;
+import flixel.math.FlxPoint;
+import flixel.math.FlxRandom;
 import flixel.util.FlxTimer;
 
 using flixel.util.FlxSpriteUtil;
@@ -29,8 +29,8 @@ class Snake extends Controls {
         _moveRate = Settings.moveRate;
 
         super(
-            _tileSize * FlxRandom.intRanged(1, 10), 
-            _tileSize * FlxRandom.intRanged(1, 19)
+            _tileSize * FlxG.random.int(1, 10), 
+            _tileSize * FlxG.random.int(1, 19)
         );
 
         _createSnake();
@@ -46,9 +46,9 @@ class Snake extends Controls {
 
     }
 
-    override public function update():Void {
+    override public function update(elapsed:Float):Void {
     
-        super.update();
+        super.update(elapsed);
 
         FlxG.overlap(this, body, gameOver);
         FlxG.overlap(this, _aim, _overlapAim);
@@ -103,9 +103,9 @@ class Snake extends Controls {
             return;
 
         }
-
-        new FlxTimer(_moveRate / FlxG.updateFramerate, _resetTimer);
-
+        
+        new FlxTimer().start(_moveRate / FlxG.updateFramerate, _resetTimer);
+        
         _move();
     
     }
@@ -206,7 +206,7 @@ class Snake extends Controls {
 
         }
     
-        return _moves[direction[FlxRandom.intRanged(0, 1)]];
+        return _moves[direction[FlxG.random.int(0, 1)]];
     
     }
 

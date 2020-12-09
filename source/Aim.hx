@@ -4,7 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxSpriteGroup;
-import flixel.util.FlxRandom;
+import flixel.math.FlxRandom;
 
 class Aim extends FlxSprite {
 
@@ -22,11 +22,11 @@ class Aim extends FlxSprite {
     public function resetPosition() {
     
         setPosition(
-            FlxRandom.intRanged(
+            FlxG.random.int(
                 0, 
                 Std.int(FlxG.width / _tileSize) - 1
             ) * _tileSize, 
-            FlxRandom.intRanged(
+            FlxG.random.int(
                 0, 
                 Std.int(FlxG.height / _tileSize) - 1
             ) * _tileSize

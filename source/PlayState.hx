@@ -19,7 +19,7 @@ class PlayState extends FlxState {
 
         _walls = FlxCollision.createCameraWall(
             FlxG.camera,
-            FlxCollision.CAMERA_WALL_OUTSIDE,
+            true,
             1
         );
 
@@ -27,9 +27,9 @@ class PlayState extends FlxState {
 
     }
 
-    override public function update():Void {
+    override public function update(elapsed:Float):Void {
 
-        super.update();
+        super.update(elapsed);
 
         FlxG.overlap(_snake, _walls, _gameOver);
 

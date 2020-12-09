@@ -23,9 +23,9 @@ class MenuState extends FlxState {
 
         FlxG.cameras.bgColor = 0x111111;
 
-        _header.setFormat(null, 64, 0xaacc33, 'center', FlxText.BORDER_SHADOW, 0xaacc33);
-        _headerTween = FlxTween.color(_header, 2, 0xaacc33, 0xcc3333, 1, 1, {
-            type: FlxTween.PINGPONG
+        _header.setFormat(null, 64, 0xaacc33, 'center', FlxTextBorderStyle.SHADOW, 0xaacc33);
+        _headerTween = FlxTween.color(_header, 2, 0xaacc33, 0xcc3333, {
+            type: FlxTweenType.PINGPONG
         });
 
         _btnPlay.loadGraphic('assets/images/button.png', true, 96, 32);
